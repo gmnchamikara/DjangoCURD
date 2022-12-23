@@ -28,4 +28,19 @@ def update_book(request, book_id):
     book_id = int(book_id)
     try:
         book_sheif = Book.objects.get(id = book_id)
-    except Book.DoesNotExist
+    except Book.DoesNotExist:
+        return redirect ('index')
+    book_form = BookCreate(request.POST or None, instance= book_sheif)
+    if book_form.is_valid():
+        book_form.save()
+        return redirect('index')
+    return render(request, 'book/upload_form.html', {'upload_form':book_form})
+
+def delete_book(request, book_id):
+    book_id = int(book_id)
+    try:
+        book_sheif = Book.get(id = book_id)
+    except Book.DoesNotExist:
+        return redirect('index')
+    book_sheif.delete()
+    return redirect('index')
